@@ -1,0 +1,61 @@
+2025-04-25T13:24:01.091+03:00  INFO 21376 --- [demo1] [main] c.e.demo.newsmap.NewsmapApplication      : Starting NewsmapApplication using Java 21.0.6 with PID 21376 (C:\Users\Den\IdeaProjects\demo1\target\classes started by Den in C:\Users\Den\IdeaProjects\demo1)
+2025-04-25T13:24:01.094+03:00  INFO 21376 --- [demo1] [main] c.e.demo.newsmap.NewsmapApplication      : No active profile set, falling back to 1 default profile: "default"
+2025-04-25T13:24:03.578+03:00  INFO 21376 --- [demo1] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-04-25T13:24:03.578+03:00  INFO 21376 --- [demo1] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-04-25T13:24:03.994+03:00  INFO 21376 --- [demo1] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 357 ms. Found 2 JPA repository interfaces.
+2025-04-25T13:24:04.260+03:00  INFO 21376 --- [demo1] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-04-25T13:24:04.261+03:00  INFO 21376 --- [demo1] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-04-25T13:24:04.287+03:00  INFO 21376 --- [demo1] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 15 ms. Found 0 Redis repository interfaces.
+2025-04-25T13:24:04.967+03:00  INFO 21376 --- [demo1] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-04-25T13:24:05.002+03:00  INFO 21376 --- [demo1] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-04-25T13:24:05.002+03:00  INFO 21376 --- [demo1] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-04-25T13:24:05.118+03:00  INFO 21376 --- [demo1] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-04-25T13:24:05.118+03:00  INFO 21376 --- [demo1] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3956 ms
+2025-04-25T13:24:05.541+03:00  INFO 21376 --- [demo1] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-25T13:24:05.597+03:00  INFO 21376 --- [demo1] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+2025-04-25T13:24:05.624+03:00  INFO 21376 --- [demo1] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-04-25T13:24:05.841+03:00  INFO 21376 --- [demo1] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-04-25T13:24:05.871+03:00  INFO 21376 --- [demo1] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-04-25T13:24:06.209+03:00  INFO 21376 --- [demo1] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: c57f5a67-d6cf-4511-bc7b-1bdb5737a7b7
+2025-04-25T13:24:06.211+03:00  INFO 21376 --- [demo1] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-04-25T13:24:06.384+03:00  INFO 21376 --- [demo1] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-04-25T13:24:07.288+03:00  INFO 21376 --- [demo1] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-25T13:24:07.595+03:00  INFO 21376 --- [demo1] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-04-25T13:24:08.227+03:00  INFO 21376 --- [demo1] [main] com.example.demo.mod.GeminiGeoLocator    : Модель для розпізнавання географічних назв успішно завантажена.
+2025-04-25T13:24:08.474+03:00  INFO 21376 --- [demo1] [main] com.example.demo.mod.GeminiGeoLocator    : Завантажено 27487 відомих міст.
+2025-04-25T13:24:08.547+03:00  INFO 21376 --- [demo1] [main] com.example.demo.mod.GeminiGeoLocator    : Проаналізовано 40221 рядків у файлі training_data.txt.
+2025-04-25T13:24:08.548+03:00  INFO 21376 --- [demo1] [main] com.example.demo.mod.GeminiGeoLocator    : Знайдено 27487 унікальних назв локацій.
+2025-04-25T13:24:08.642+03:00  WARN 21376 --- [demo1] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-25T13:24:08.660+03:00  INFO 21376 --- [demo1] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-04-25T13:24:08.784+03:00  INFO 21376 --- [demo1] [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2025-04-25T13:24:09.688+03:00  INFO 21376 --- [demo1] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-04-25T13:24:09.694+03:00  INFO 21376 --- [demo1] [main] c.e.demo.newsmap.NewsmapApplication      : Started NewsmapApplication in 9.117 seconds (process running for 9.687)
+2025-04-25T13:24:09.697+03:00  INFO 21376 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : Завантаження оброблених посилань з: processed_links.txt
+2025-04-25T13:24:09.713+03:00  INFO 21376 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : Завантажено 293 оброблених посилань.
+2025-04-25T13:24:09.713+03:00  INFO 21376 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : З'єднання з: https://www.ukr.net/news/russianaggression.html
+2025-04-25T13:24:10.177+03:00  INFO 21376 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : З'єднання успішне
+2025-04-25T13:24:10.183+03:00  INFO 21376 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : Знайдено елемент section.im
+2025-04-25T13:24:10.184+03:00  INFO 21376 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : Заголовок: Ворожий дрон влучив у цивільне авто на Запоріжжі: загинув водій
+2025-04-25T13:24:10.184+03:00  INFO 21376 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : Посилання: https://censor.net/ua/news/3548759/na-zaporijji-vnaslidok-vluchannya-dronu-rf-u-avto-zagynuv-vodiyi
+2025-04-25T13:24:10.184+03:00  INFO 21376 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : Посилання збережено у файл: https://censor.net/ua/news/3548759/na-zaporijji-vnaslidok-vluchannya-dronu-rf-u-avto-zagynuv-vodiyi
+2025-04-25T13:24:10.215+03:00  INFO 21376 --- [demo1] [scheduling-1] com.example.demo.mod.GeminiGeoLocator    : Знайдено відоме місто (за лемами): запоріжжя
+2025-04-25T13:24:10.244+03:00  INFO 21376 --- [demo1] [scheduling-1] com.example.demo.mod.GeoCoder            :  Виконуємо запит: https://nominatim.openstreetmap.org/search?q=?q=%D0%B7%D0%B0%D0%BF%D0%BE%D1%80%D1%96%D0%B6%D0%B6%D1%8F&format=json&limit=5
+2025-04-25T13:24:10.560+03:00  INFO 21376 --- [demo1] [scheduling-1] com.example.demo.mod.GeoCoder            : ✅ Отримано координати для запоріжжя: 47.917393440524336, 35.111868993892735
+2025-04-25T13:24:10.561+03:00  INFO 21376 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : Оновлення файлу GeoJSON: C:\Users\Den\IdeaProjects\demo1\src\main\resources\static\news.json
+2025-04-25T13:24:11.464+03:00  INFO 21376 --- [demo1] [scheduling-1] com.example.demo.mod.GeoCoder            : Отримано локацію для координат 47.917393440524336,35.111868993892735: Дніпровський район, Запоріжжя, Запорізька міська громада, Запорізький район, Запорізька область, Україна
+2025-04-25T13:24:11.470+03:00  INFO 21376 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : GeoJSON оновлено.
+2025-04-25T13:24:22.536+03:00  INFO 21376 --- [demo1] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-25T13:24:22.537+03:00  INFO 21376 --- [demo1] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-04-25T13:24:22.538+03:00  INFO 21376 --- [demo1] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-04-25T13:25:40.550+03:00  INFO 21376 --- [demo1] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-25T13:25:40.553+03:00  INFO 21376 --- [demo1] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-04-25T13:25:40.613+03:00  INFO 21376 --- [demo1] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-04-25T13:25:40.638+03:00  INFO 21376 --- [demo1] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-04-25T13:25:40.639+03:00  INFO 21376 --- [demo1] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

@@ -1,0 +1,90 @@
+<START:location> Рогізьки (51.68015, 31.84134) <END>
+<START:location> Войничеве (47.19375, 29.86129) <END>
+<START:location> Білоусівка (49.42897, 33.09634) <END>
+<START:location> Ізмаїльський район (45.35081, 28.83752) <END>
+<START:location> Новопсковський район (49.5, 39.08333) <END>
+<START:location> Zabary (46.30429, 29.75202) <END>
+<START:location> Кривий Ріг-Західний (47.8795, 33.31002) <END>
+<START:location> Васильків I (50.22609, 30.2245) <END>
+<START:location> Немилянка (50.46392, 27.74285) <END>
+<START:location> Нова Дача (47.37154, 36.3546) <END>
+<START:location> Червоний Став (49.28464, 37.83719) <END>
+<START:location> Бахчисарайський район (44.75002, 33.8633) <END>
+<START:location> Миколаївка (49.29556, 36.21417) <END>
+<START:location> Бережниця (49.01839, 24.44259) <END>
+<START:location> Середній Майдан (48.63829, 24.75461) <END>
+<START:location> Фігурівка (48.85972, 38.18472) <END>
+<START:location> Ілемнія (48.85254, 23.98051) <END>
+<START:location> Рівне (48.10294, 36.22394) <END>
+<START:location> Курилівка (51.84889, 33.07497) <END>
+<START:location> Широкий (51.87984, 34.24408) <END>
+<START:location> Стародубівка (48.89024, 37.79494) <END>
+<START:location> Boremel (50.47103, 25.19337) <END>
+<START:location> Розсадки (48.42943, 38.34668) <END>
+<START:location> Вила-Ярузькі (48.44499, 28.03762) <END>
+<START:location> Бобрик (50.67655, 33.49706) <END>
+<START:location> Яремичі (49.83637, 27.45638) <END>
+<START:location> Турковичі (50.33072, 25.64802) <END>
+<START:location> Святослав (49.00627, 23.47152) <END>
+<START:location> Стрижівщина (49.34983, 34.65213) <END>
+<START:location> Широкий (47.55934, 36.38778) <END>
+<START:location> Стильське Відслонення (47.67977, 37.79153) <END>
+<START:location> Рижове (48.93865, 36.71307) <END>
+<START:location> Годомичі (51.06628, 25.51381) <END>
+<START:location> Михайлівське (49.51781, 35.11655) <END>
+<START:location> Мала Мартинка (48.52818, 23.07236) <END>
+<START:location> Передмістя (48.97282, 25.47132) <END>
+<START:location> Осташевці (49.66035, 25.32772) <END>
+<START:location> Оплицько (50.20672, 24.75566) <END>
+<START:location> Борисівка (49.07262, 29.18834) <END>
+<START:location> Дружелюбівка (47.60121, 30.77218) <END>
+<START:location> Станція Заруцький (51.6844, 34.06028) <END>
+<START:location> Залізна Балка (48.3192, 37.92305) <END>
+<START:location> Веселе (48.58955, 35.78656) <END>
+<START:location> Чуйківка (52.03299, 34.00175) <END>
+<START:location> Виноградне (46.96612, 32.6799) <END>
+<START:location> Станція Мостки (49.7192, 23.8294) <END>
+<START:location> Прилуки (51.46341, 28.86574) <END>
+<START:location> Пилипки (49.95, 28.35) <END>
+<START:location> Moie des Orgeries (49.42528, -2.37333) <END>
+<START:location> Глеблина (48.06292, 25.02589) <END>
+<START:location> Шкарлати (50.29184, 35.39255) <END>
+<START:location> Creve Coeur (49.50833, -2.53333) <END>
+<START:location> Повстинь (50.17003, 32.63132) <END>
+<START:location> Бережці (51.16841, 23.87155) <END>
+<START:location> Солоне (49.73555, 39.34873) <END>
+<START:location> Степове (49.65553, 36.8262) <END>
+<START:location> Охотин (50.75435, 25.11065) <END>
+<START:location> Ореховець (49.46829, 26.18315) <END>
+<START:location> Калуга (47.36354, 32.94101) <END>
+<START:location> Гвинтове (51.28002, 33.68478) <END>
+<START:location> Чигирин-Дубрава (49.28333, 32.91667) <END>
+<START:location> Станція Фастів-ІІ (50.05315, 29.94203) <END>
+<START:location> Топилівка (49.26131, 32.45215) <END>
+<START:location> Гусинка (49.76591, 37.24233) <END>
+<START:location> Варяж (50.51455, 24.0923) <END>
+<START:location> Очеретина Балка (47.76667, 33.06667) <END>
+<START:location> Верхні Ремети (48.26693, 22.86419) <END>
+<START:location> Красилівське (50.6704, 27.39489) <END>
+<START:location> Славутський район (50.29646, 26.86609) <END>
+<START:location> Гостинний будинок Хрещатик (50.44961, 30.52264) <END>
+<START:location> Полюхне (50.49984, 24.65886) <END>
+<START:location> Дубове (47.44, 29.28694) <END>
+<START:location> Stantsiia Aivazovska (45.059, 35.39131) <END>
+<START:location> Shevchenko (47.26759, 37.98512) <END>
+<START:location> Арбузинка (47.90791, 31.31701) <END>
+<START:location> Пожеже (48.92805, 25.53435) <END>
+<START:location> Гнізна (49.26849, 25.69507) <END>
+<START:location> Opir (49.11025, 23.59507) <END>
+<START:location> Тулиголове (51.59498, 33.65954) <END>
+<START:location> Потічок (49.47157, 34.04354) <END>
+<START:location> Соборне (49.56102, 25.76591) <END>
+<START:location> Лутугине (48.0268, 38.66298) <END>
+<START:location> Ізобільне (47.69711, 34.21818) <END>
+<START:location> Стара Шарапановка (48.5, 28.91667) <END>
+<START:location> Радужне (50.33509, 26.42529) <END>
+<START:location> Бака Тас (44.98229, 35.11471) <END>
+<START:location> Soleny (48.19283, 37.15699) <END>
+<START:location> Гора Половатинець (48.92627, 23.7707) <END>
+<START:location> Мала Яблунька (51.22588, 25.49228) <END>
+<START:location> Лисогірка (47.65658, 35.09834) <END>

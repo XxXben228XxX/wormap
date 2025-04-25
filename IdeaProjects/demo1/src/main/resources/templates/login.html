@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            width: 100%;
+            --s: 200px; /* control the size */
+            --c1: #1d1d1d;
+            --c2: #4e4f51;
+            --c3: #3c3c3c;
+
+            background: repeating-conic-gradient(
+                    from 30deg,
+                    #0000 0 120deg,
+                    var(--c3) 0 180deg
+            )
+            calc(0.5 * var(--s)) calc(0.5 * var(--s) * 0.577),
+            repeating-conic-gradient(
+                    from 30deg,
+                    var(--c1) 0 60deg,
+                    var(--c2) 0 120deg,
+                    var(--c3) 0 180deg
+            );
+            background-size: var(--s) calc(var(--s) * 0.577);
+            color: white; /* Для кращої видимості тексту на темному фоні */
+            /* Додайте інші стилі за потреби */
+        }
+
+        .button-container {
+            text-align: center; /* Center the button horizontally */
+            margin-top: 20px; /* Move the button down */
+        }
+
+        .button {
+            --stone-50: #fafaf9;
+            --stone-800: #292524;
+            --yellow-400: #facc15;
+            --hover-color: white; /* Added hover color */
+
+            font-family: "Rubik", sans-serif;
+            cursor: pointer;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            line-height: 1;
+            font-size: 1rem;
+            border-radius: 1rem;
+            outline: 2px solid transparent;
+            outline-offset: 6px;
+            color: var(--stone-50);
+        }
+
+        .button:active {
+            outline-color: var(--yellow-400);
+        }
+
+        .button:focus-visible {
+            outline-color: var(--yellow-400);
+            outline-style: dashed;
+        }
+
+        .button::before {
+            content: "";
+            position: absolute;
+            z-index: 0;
+            height: 200%;
+            max-height: 100px;
+            aspect-ratio: 1;
+            margin: auto;
+            background: white;
+            clip-path: polygon(
+                    100% 50%,
+                    91.48% 56.57%,
+                    97.55% 65.45%,
+                    87.42% 69.07%,
+                    90.45% 79.39%,
+                    79.7% 79.7%,
+                    79.39% 90.45%,
+                    69.07% 87.42%,
+                    65.45% 97.55%,
+                    56.57% 91.48%,
+                    50% 100%,
+                    43.43% 91.48%,
+                    34.55% 97.55%,
+                    30.93% 87.42%,
+                    20.61% 90.45%,
+                    20.3% 79.7%,
+                    9.55% 79.39%,
+                    12.58% 69.07%,
+                    2.45% 65.45%,
+                    8.52% 56.57%,
+                    0% 50%,
+                    8.52% 43.43%,
+                    2.45% 34.55%,
+                    12.58% 30.93%,
+                    9.55% 20.61%,
+                    20.3% 20.3%,
+                    20.61% 9.55%,
+                    30.93% 12.58%,
+                    34.55% 2.45%,
+                    43.43% 8.52%,
+                    50% 0%,
+                    56.57% 8.52%,
+                    65.45% 2.45%,
+                    69.07% 12.58%,
+                    79.39% 9.55%,
+                    79.7% 20.3%,
+                    90.45% 20.61%,
+                    87.42% 30.93%,
+                    97.55% 34.55%,
+                    91.48% 43.43%
+            );
+            animation: star-rotate 4s linear infinite;
+            opacity: 0.1;
+        }
+
+        .button:hover::before {
+            opacity: 1;
+        }
+
+        .button > div {
+            padding: 2px;
+            border-radius: 1rem;
+            background-color: var(--yellow-400);
+            transform: translate(-4px, -4px);
+            transition: all 150ms ease;
+            box-shadow:
+                    0.5px 0.5px 0 0 var(--yellow-400),
+                    1px 1px 0 0 var(--yellow-400),
+                    1.5px 1.5px 0 0 var(--yellow-400),
+                    2px 2px 0 0 var(--yellow-400),
+                    2.5px 2.5px 0 0 var(--yellow-400),
+                    3px 3px 0 0 var(--yellow-400),
+                    0 0 0 2px var(--stone-800),
+                    0.5px 0.5px 0 2px var(--stone-800),
+                    1px 1px 0 2px var(--stone-800),
+                    1.5px 1.5px 0 2px var(--stone-800),
+                    2px 2px 0 2px var(--stone-800),
+                    2.5px 2.5px 0 2px var(--stone-800),
+                    3px 3px 0 2px var(--stone-800),
+                    3.5px 3.5px 0 2px var(--stone-800),
+                    4px 4px 0 2px var(--stone-800),
+                    0 0 0 4px var(--stone-50),
+                    0.5px 0.5px 0 4px var(--stone-50),
+                    1px 1px 0 4px var(--stone-50),
+                    1.5px 1.5px 0 4px var(--stone-50),
+                    2px 2px 0 4px var(--stone-50),
+                    2.5px 2.5px 0 4px var(--stone-50),
+                    3px 3px 0 4px var(--stone-50),
+                    3.5px 3.5px 0 4px var(--stone-50),
+                    4px 4px 0 4px var(--stone-50);
+        }
+
+        .button:hover > div {
+            transform: translate(0, 0);
+            box-shadow:
+                    0 0 0 0 var(--yellow-400),
+                    0 0 0 0 var(--yellow-400),
+                    0 0 0 0 var(--yellow-400),
+                    0 0 0 0 var(--yellow-400),
+                    0 0 0 0 var(--yellow-400),
+                    0 0 0 0 var(--yellow-400),
+                    0 0 0 2px var(--stone-800),
+                    0 0 0 2px var(--stone-800),
+                    0 0 0 2px var(--stone-800),
+                    0 0 0 2px var(--stone-800),
+                    0 0 0 2px var(--stone-800),
+                    0 0 0 2px var(--stone-800),
+                    0 0 0 2px var(--stone-800),
+                    0 0 0 2px var(--stone-800),
+                    0 0 0 2px var(--stone-800),
+                    0 0 0 4px var(--stone-50),
+                    0 0 0 4px var(--stone-50),
+                    0 0 0 4px var(--stone-50),
+                    0 0 0 4px var(--stone-50),
+                    0 0 0 4px var(--stone-50),
+                    0 0 0 4px var(--stone-50),
+                    0 0 0 4px var(--stone-50),
+                    0 0 0 4px var(--stone-50),
+                    0 0 0 4px var(--stone-50);
+        }
+
+        .button:hover {
+            color: var(--hover-color); /* Change text color on hover */
+        }
+
+        .button > div > div {
+            position: relative;
+            pointer-events: none;
+            border-radius: calc(1rem - 2px);
+            background-color: var(--stone-800);
+        }
+
+        .button > div > div::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 1rem;
+            opacity: 0.1;
+            background-image: radial-gradient(
+                    rgb(255 255 255 / 80%) 20%,
+                    transparent 20%
+            ),
+            radial-gradient(rgb(255 255 255 / 100%) 20%, transparent 20%);
+            background-position:
+                    0 0,
+                    4px 4px;
+            background-size: 8px 8px;
+            mix-blend-mode: hard-light;
+            box-shadow: inset 0 0 0 1px var(--stone-800);
+            animation: dots 0.4s infinite linear;
+            transition: opacity 150ms ease;
+        }
+
+        .button > div > div > div {
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            gap: 0.25rem;
+            filter: drop-shadow(0 -1px 0 var(--stone-800));
+        }
+
+        .button > div > div > div:hover {
+            filter: drop-shadow(0 -1px 0 rgba(255, 255, 255, 0.1));
+        }
+
+        .button > div > div > div:active {
+            transform: translateY(2px);
+        }
+
+        @keyframes star-rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes dots {
+            0% {
+                background-position:
+                        0 0,
+                        4px 4px;
+            }
+            100% {
+                background-position:
+                        8px 0,
+                        12px 4px;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .button:active,
+            .button:focus-visible {
+                outline-color: var(--yellow-400);
+            }
+        }
+
+        .input__container {
+            position: relative;
+            background: #f0f0f0;
+            padding: 20px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 15px;
+            border: 4px solid #000;
+            max-width: 350px;
+            transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+            transform-style: preserve-3d;
+            transform: rotateX(10deg) rotateY(-10deg);
+            perspective: 1000px;
+            box-shadow: 10px 10px 0 #000;
+            margin-bottom: 20px; /* Додано відступ між полями */
+        }
+
+        .input__container:hover {
+            transform: rotateX(5deg) rotateY(1deg) scale(1.05);
+            box-shadow: 25px 25px 0 -5px #e9b50b, 25px 25px 0 0 #000;
+        }
+
+        .shadow__input {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            bottom: 0;
+            z-index: -1;
+            transform: translateZ(-50px);
+            background: linear-gradient(
+                    45deg,
+                    rgba(255, 107, 107, 0.4) 0%,
+                    rgba(255, 107, 107, 0.1) 100%
+            );
+            filter: blur(20px);
+        }
+
+        .input__search {
+            width: 100%;
+            outline: none;
+            border: 3px solid #000;
+            padding: 15px;
+            font-size: 18px;
+            background: #fff;
+            color: #000;
+            transform: translateZ(10px);
+            transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            z-index: 3;
+            font-family: "Roboto", Arial, sans-serif;
+            letter-spacing: -0.5px;
+        }
+
+        .input__search::placeholder {
+            color: #666;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .input__search:hover,
+        .input__search:focus {
+            background: #f0f0f0;
+            transform: translateZ(20px) translateX(-5px) translateY(-5px);
+            box-shadow: 5px 5px 0 0 #000;
+        }
+
+        .input__container::before {
+            content: attr(for); /* Використовуємо атрибут for з label */
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: #e9b50b;
+            color: #000;
+            font-weight: bold;
+            padding: 5px 10px;
+            font-size: 14px;
+            transform: translateZ(50px);
+            z-index: 4;
+            border: 2px solid #000;
+        }
+
+        label {
+            display: none; /* Приховуємо label, оскільки використовуємо ::before */
+        }
+        .register-container {
+            display: flex; /* Розташовуємо елементи в ряд */
+            align-items: center; /* Вирівнюємо елементи по вертикалі */
+            font-size: 1.1em; /* Загальний розмір шрифту */
+            color: #ccc; /* Загальний колір тексту */
+            font-weight: bold; /* Загальний стиль шрифту */
+            transition: color 0.3s ease; /* Загальний перехід кольору */
+        }
+
+        .register-container:hover {
+            color: green; /* Загальний колір при наведенні */
+        }
+
+        .register-text {
+            margin-right: 5px; /* Додаємо відступ між текстом та посиланням */
+        }
+
+        .button-sign-up-link {
+            margin: 0;
+            height: auto;
+            background: transparent;
+            padding: 0;
+            border: none;
+            cursor: pointer;
+            --border-right: 6px;
+            --text-stroke-color: rgba(255, 255, 255, 0.6);
+            --animation-color: green;
+            --fs-size: 2em;
+            letter-spacing: 3px;
+            text-decoration: none;
+            font-size: 1em; /* Розмір шрифту, щоб відповідати register-container */
+            font-family: "Arial";
+            position: relative;
+            text-transform: uppercase;
+            color: transparent;
+            -webkit-text-stroke: 1px var(--text-stroke-color);
+            transition: color 0.3s ease-in-out;
+        }
+
+        .hover-text {
+            position: absolute;
+            box-sizing: border-box;
+            content: attr(data-text);
+            color: var(--animation-color);
+            width: 0%;
+            inset: 0;
+            overflow: hidden;
+            transition: 0.5s;
+            -webkit-text-stroke: 1px var(--animation-color);
+        }
+
+        .button-sign-up-link:hover {
+            color: #00cc00 !important;
+        }
+
+        .button-sign-up-link:hover .hover-text {
+            width: 100%;
+            filter: drop-shadow(0 0 23px var(--animation-color));
+        }
+
+        .button-sign-up-link {
+            color: inherit; /* Використовуємо колір з register-container */
+        }
+        h1 {
+            color: white; /* Білий колір тексту */
+            text-shadow: 0 0 5px white; /* Легке розмиття */
+        }
+        .anonymous-button {
+            padding: 10px 20px;
+            text-transform: uppercase;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: 500;
+            color: #ffffff80;
+            text-shadow: none;
+            background: transparent;
+            cursor: pointer;
+            box-shadow: transparent;
+            border: 1px solid #ffffff80;
+            transition: 0.5s ease;
+            user-select: none;
+        }
+
+        .anonymous-button:hover,
+        .anonymous-button:focus {
+            color: #ffffff;
+            background: #008cff;
+            border: 1px solid #008cff;
+            text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px #ffffff;
+            box-shadow: 0 0 5px #008cff, 0 0 20px #008cff, 0 0 50px #008cff,
+            0 0 100px #008cff;
+        }
+    </style>
+</head>
+<body>
+<h1>Login</h1>
+
+<form th:action="@{/login}" method="post">
+    <div class="input__container" for="username">
+        <input type="text" id="username" name="username" class="input__search" placeholder="Enter username">
+    </div>
+
+    <div class="input__container" for="password">
+        <input type="password" id="password" name="password" class="input__search" placeholder="Enter password">
+    </div>
+    <div class="button-container">
+        <button type="submit" class="button"><div><div><div>Sign In</div></div></div></button>
+    </div>
+</form>
+<p th:if="${param.error}" style="color: red;">Invalid username or password</p>
+<p class="register-container">
+  <span class="register-text">
+    Not registered yet?
+  </span>
+    <a th:href="@{/auth/register}" class="button-sign-up-link">
+        Sign up
+        <span class="hover-text" data-text="Sign up"></span>
+    </a>
+</p>
+<div style="position: absolute; top: 70px; left: 50%; transform: translateX(-50%); z-index: 1000;">
+    <form th:action="@{/anonymous}" method="post">
+        <button type="submit" class="anonymous-button">Anonymous Login</button>
+    </form>
+</div>
+</body>
+</html>
