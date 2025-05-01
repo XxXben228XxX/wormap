@@ -1,7 +1,8 @@
 # Етап 1: Збірка
 FROM maven:3.9.4-eclipse-temurin-21 AS build
 WORKDIR /app
-COPY . .
+COPY IdeaProjects/demo1/pom.xml pom.xml
+COPY IdeaProjects/demo1/src src/
 RUN mvn clean install -DskipTests
 
 # Етап 2: Запуск
