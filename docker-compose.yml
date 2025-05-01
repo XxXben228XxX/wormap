@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: springapp
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:sqlserver://host.docker.internal:1433;databaseName=News;encrypt=false;trustServerCertificate=true;loginTimeout=30;
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: 123
+      JWT_SECRET: 123abc
+    ports:
+      - "8080:8080"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
