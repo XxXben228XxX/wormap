@@ -59,3 +59,64 @@
 2025-04-25T13:25:40.613+03:00  INFO 21376 --- [demo1] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2025-04-25T13:25:40.638+03:00  INFO 21376 --- [demo1] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2025-04-25T13:25:40.639+03:00  INFO 21376 --- [demo1] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-04-25T20:43:40.986+03:00  INFO 26484 --- [demo1] [main] c.e.demo.newsmap.NewsmapApplication      : Starting NewsmapApplication using Java 21.0.6 with PID 26484 (C:\Users\Den\IdeaProjects\demo1\target\classes started by Den in C:\Users\Den\IdeaProjects\demo1)
+2025-04-25T20:43:40.988+03:00  INFO 26484 --- [demo1] [main] c.e.demo.newsmap.NewsmapApplication      : No active profile set, falling back to 1 default profile: "default"
+2025-04-25T20:43:41.279+03:00  INFO 26484 --- [demo1] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-04-25T20:43:41.279+03:00  INFO 26484 --- [demo1] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-04-25T20:43:41.351+03:00  INFO 26484 --- [demo1] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 67 ms. Found 2 JPA repository interfaces.
+2025-04-25T20:43:41.447+03:00  INFO 26484 --- [demo1] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-04-25T20:43:41.448+03:00  INFO 26484 --- [demo1] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2025-04-25T20:43:41.457+03:00  INFO 26484 --- [demo1] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 4 ms. Found 0 Redis repository interfaces.
+2025-04-25T20:43:41.749+03:00  INFO 26484 --- [demo1] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-04-25T20:43:41.757+03:00  INFO 26484 --- [demo1] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-04-25T20:43:41.758+03:00  INFO 26484 --- [demo1] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.36]
+2025-04-25T20:43:41.796+03:00  INFO 26484 --- [demo1] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-04-25T20:43:41.796+03:00  INFO 26484 --- [demo1] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 780 ms
+2025-04-25T20:43:41.922+03:00  INFO 26484 --- [demo1] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-25T20:43:41.949+03:00  INFO 26484 --- [demo1] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.8.Final
+2025-04-25T20:43:41.967+03:00  INFO 26484 --- [demo1] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-04-25T20:43:42.106+03:00  INFO 26484 --- [demo1] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-04-25T20:43:42.122+03:00  INFO 26484 --- [demo1] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-04-25T20:43:42.298+03:00  INFO 26484 --- [demo1] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: 25ee822a-5ab7-4ddd-b19d-e5d94ef0c187
+2025-04-25T20:43:42.299+03:00  INFO 26484 --- [demo1] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-04-25T20:43:42.350+03:00  INFO 26484 --- [demo1] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-04-25T20:43:42.792+03:00  INFO 26484 --- [demo1] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-25T20:43:42.964+03:00  INFO 26484 --- [demo1] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-04-25T20:43:43.336+03:00  INFO 26484 --- [demo1] [main] com.example.demo.mod.GeminiGeoLocator    : Модель для розпізнавання географічних назв успішно завантажена.
+2025-04-25T20:43:43.468+03:00  INFO 26484 --- [demo1] [main] com.example.demo.mod.GeminiGeoLocator    : Завантажено 27487 відомих міст.
+2025-04-25T20:43:43.531+03:00  INFO 26484 --- [demo1] [main] com.example.demo.mod.GeminiGeoLocator    : Проаналізовано 40221 рядків у файлі training_data.txt.
+2025-04-25T20:43:43.531+03:00  INFO 26484 --- [demo1] [main] com.example.demo.mod.GeminiGeoLocator    : Знайдено 27487 унікальних назв локацій.
+2025-04-25T20:43:43.574+03:00  WARN 26484 --- [demo1] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-04-25T20:43:43.586+03:00  INFO 26484 --- [demo1] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-04-25T20:43:43.632+03:00  INFO 26484 --- [demo1] [main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2025-04-25T20:43:44.055+03:00  INFO 26484 --- [demo1] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-04-25T20:43:44.061+03:00  INFO 26484 --- [demo1] [main] c.e.demo.newsmap.NewsmapApplication      : Started NewsmapApplication in 3.324 seconds (process running for 3.58)
+2025-04-25T20:43:44.063+03:00  INFO 26484 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : Завантаження оброблених посилань з: processed_links.txt
+2025-04-25T20:43:44.074+03:00  INFO 26484 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : Завантажено 294 оброблених посилань.
+2025-04-25T20:43:44.075+03:00  INFO 26484 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : З'єднання з: https://www.ukr.net/news/russianaggression.html
+2025-04-25T20:43:44.295+03:00  INFO 26484 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : З'єднання успішне
+2025-04-25T20:43:44.300+03:00  INFO 26484 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : Знайдено елемент section.im
+2025-04-25T20:43:44.301+03:00  INFO 26484 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : Заголовок: У Києві завершили рятувальну операцію після удару РФ по будинку
+2025-04-25T20:43:44.302+03:00  INFO 26484 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : Посилання: https://toneto.net/news/kultura/v-kieve-zavershili-spasatelnuyu-operatsiyu-posle-udara-rf-po-domu
+2025-04-25T20:43:44.302+03:00  INFO 26484 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : Посилання збережено у файл: https://toneto.net/news/kultura/v-kieve-zavershili-spasatelnuyu-operatsiyu-posle-udara-rf-po-domu
+2025-04-25T20:43:44.325+03:00  INFO 26484 --- [demo1] [scheduling-1] com.example.demo.mod.GeminiGeoLocator    : Знайдено відоме місто (за лемами): київ
+2025-04-25T20:43:44.337+03:00  INFO 26484 --- [demo1] [scheduling-1] com.example.demo.mod.GeoCoder            :  Виконуємо запит: https://nominatim.openstreetmap.org/search?q=?q=%D0%BA%D0%B8%D1%97%D0%B2&format=json&limit=5
+2025-04-25T20:43:44.665+03:00  INFO 26484 --- [demo1] [scheduling-1] com.example.demo.mod.GeoCoder            : ✅ Отримано координати для київ: 50.55373819348055, 30.418149180320235
+2025-04-25T20:43:44.666+03:00  INFO 26484 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : Оновлення файлу GeoJSON: C:\Users\Den\IdeaProjects\demo1\src\main\resources\static\news.json
+2025-04-25T20:43:45.609+03:00  INFO 26484 --- [demo1] [scheduling-1] com.example.demo.mod.GeoCoder            : Отримано локацію для координат 50.55373819348055,30.418149180320235: Архімедка, Оболонський район, Київ, 04215, Україна
+2025-04-25T20:43:45.614+03:00  INFO 26484 --- [demo1] [scheduling-1] com.example.demo.mod.NewsParser          : GeoJSON оновлено.
+2025-04-25T20:43:54.202+03:00  INFO 26484 --- [demo1] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-25T20:43:54.203+03:00  INFO 26484 --- [demo1] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-04-25T20:43:54.204+03:00  INFO 26484 --- [demo1] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-04-25T20:44:12.296+03:00  INFO 26484 --- [demo1] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-25T20:44:12.299+03:00  INFO 26484 --- [demo1] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-04-25T20:44:12.307+03:00  INFO 26484 --- [demo1] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-04-25T20:44:12.308+03:00  INFO 26484 --- [demo1] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-04-25T20:44:12.309+03:00  INFO 26484 --- [demo1] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

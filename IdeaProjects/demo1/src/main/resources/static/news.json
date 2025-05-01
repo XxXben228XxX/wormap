@@ -1346,5 +1346,20 @@
             "title": "Ворожий дрон влучив у цивільне авто на Запоріжжі: загинув водій",
             "url": ["https://censor.net/ua/news/3548759/na-zaporijji-vnaslidok-vluchannya-dronu-rf-u-avto-zagynuv-vodiyi"]
         }
+    },
+    {
+        "geometry": {
+            "coordinates": [
+                30.418149180320235,
+                50.55373819348055
+            ],
+            "type": "Point"
+        },
+        "type": "Feature",
+        "properties": {
+            "name": "Архімедка, Оболонський район, Київ, 04215, Україна",
+            "title": "У Києві завершили рятувальну операцію після удару РФ по будинку",
+            "url": ["https://toneto.net/news/kultura/v-kieve-zavershili-spasatelnuyu-operatsiyu-posle-udara-rf-po-domu"]
+        }
     }
 ]
