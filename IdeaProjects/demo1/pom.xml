@@ -107,6 +107,11 @@
 			<version>1.17.2</version>
 		</dependency>
 		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-aiplatform</artifactId>
+			<version>3.2.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20231013</version>
@@ -176,6 +181,7 @@
 			<artifactId>language-uk</artifactId>
 			<version>5.9</version>
 		</dependency>
+		<!-- Основна бібліотека LanguageTool (вона потрібна для коректної роботи language-uk) -->
 		<dependency>
 			<groupId>org.languagetool</groupId>
 			<artifactId>languagetool-core</artifactId>
