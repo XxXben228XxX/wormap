@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: wormap-app  # Назва твого веб-сервісу на Render
+    env: docker
+    region: eu-central-1 # Оберіть бажаний регіон
+    dockerfilePath: Dockerfile # Шлях до твого Dockerfile
+    ports:
+      - 8080 # Порт, який слухає твій застосунок всередині контейнера
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: wormap-db # Назва бази даних PostgreSQL на Render (створимо її окремо)
+          property: connectionString
+      - key: SPRING_PROFILES_ACTIVE
+        value: postgres # Якщо ти використовуєш профіль 'postgres'
+      - key: PORT
+        value: 8080 # Важливо! Render використовує змінну PORT
