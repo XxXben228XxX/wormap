@@ -1361,5 +1361,20 @@
             "title": "У Києві завершили рятувальну операцію після удару РФ по будинку",
             "url": ["https://toneto.net/news/kultura/v-kieve-zavershili-spasatelnuyu-operatsiyu-posle-udara-rf-po-domu"]
         }
+    },
+    {
+        "geometry": {
+            "coordinates": [
+                35.45352139314422,
+                46.75930335897955
+            ],
+            "type": "Point"
+        },
+        "type": "Feature",
+        "properties": {
+            "name": "Костянтинівська сільська громада, Мелітопольський район, Запорізька область, Україна",
+            "title": "Російський опозиційний журналіст мільйонник підтримав полонених журналістів команди РІА Мелітополь \u2013 історії полонених (фото, відео)",
+            "url": ["https://ria-m.tv/ua/news/377864/rosiyskiy-opozitsiyniy-jurnalist-milyonnik-pidtrimav-polonenih-jurnalistiv-komandi-ria-melitopol-istorii-polonenih-(foto-video).html"]
+        }
     }
 ]
