@@ -156,7 +156,8 @@ public class NewsParser {
     }
     private Set<String> loadCitiesFromDatabase() {
         Set<String> cities = new HashSet<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/training_data.txt"))) {
+        ClassPathResource trainingDataResource = new ClassPathResource("training_data.txt");
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(trainingDataResource.getInputStream()))) {
             String line;
             Pattern pattern = Pattern.compile("<START:location>\\s*(.*?)\\s*<END>");
             while ((line = reader.readLine()) != null) {

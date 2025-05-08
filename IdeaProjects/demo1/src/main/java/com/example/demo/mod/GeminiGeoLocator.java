@@ -10,6 +10,7 @@ import org.languagetool.tagging.uk.UkrainianTagger;
 import org.languagetool.tokenizers.uk.UkrainianWordTokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 
@@ -32,15 +33,34 @@ public class GeminiGeoLocator {
     private Set<String> knownCities = new HashSet<>();
 
     private static final int LEVENSHTEIN_THRESHOLD = 2;
-    private static final List<String> CITY_SUFFIXES = Arrays.asList("ський", "ська", "ське", "ці", "чани", "чанка", "щина", "щинський", "щинська", "щинське");
-    private static final List<String> CITY_ROOT_EXCEPTIONS = Arrays.asList("київ", "львів", "харків");
+    private static final List<String> CITY_SUFFIXES = Arrays.asList(
+            "ський", "ська", "ське", "ці", "чани", "чанка", "щина", "щинський", "щинська", "щинське",
+            "град", "поль", "піль", "бург", "слав", "жанськ", "янськ",
+            "ів", "їв", "ово", "єво", "ино", "іно",
+            "ськ", "к", "ж", "р", "т", "м", "н", "с", "я", "е", "и", "і", "ї", "у", "є", "й" // Однобуквені закінчення - дуже обережно!
+    );
+    private static final List<String> CITY_ROOT_EXCEPTIONS = Arrays.asList(
+            "київ", "львів", "харків", "одеса", "дніпро", "донецьк", "запоріжжя", "кривий ріг",
+            "миколаїв", "вінниця", "полтава", "чернігів", "черкаси", "суми", "житомир",
+            "хмельницький", "рівне", "кропивницький", "івано-франківськ", "тернопіль",
+            "луцьк", "чернівці", "ужгород", "сімферополь", "севастополь", // Важливі великі міста
+            "бровари", "буча", "ірпінь", "вишгород", "славутич", // Міста Київської області (з контексту)
+            "маріуполь", "херсон", "мелітополь", "бердянськ" // Міста, які часто згадуються у новинах
+    );
 
     @PostConstruct
     public void init() {
-        try (InputStream modelIn = new FileInputStream("src/main/resources/models/en-ner-location.bin")) {
-            TokenNameFinderModel model = new TokenNameFinderModel(modelIn);
-            locationFinder = new NameFinderME(model);
-            logger.info("Модель для розпізнавання географічних назв успішно завантажена.");
+        try {
+            ClassPathResource modelResource = new ClassPathResource("models/en-ner-location.bin");
+            if (modelResource.exists()) {
+                try (InputStream modelIn = modelResource.getInputStream()) {
+                    TokenNameFinderModel model = new TokenNameFinderModel(modelIn);
+                    locationFinder = new NameFinderME(model);
+                    logger.info("Модель для розпізнавання географічних назв успішно завантажена.");
+                }
+            } else {
+                logger.error("❌ Не знайдено моделі OpenNLP за шляхом: models/en-ner-location.bin");
+            }
         } catch (IOException e) {
             logger.error("Помилка завантаження моделі OpenNLP: {}", e.getMessage());
         }
@@ -52,7 +72,9 @@ public class GeminiGeoLocator {
     }
 
     private void loadKnownCities() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/training_data.txt"))) {
+        knownCities.clear(); // Очищаємо множину перед завантаженням
+        ClassPathResource citiesResource = new ClassPathResource("training_data.txt");
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(citiesResource.getInputStream()))) {
             String line;
             Pattern pattern = Pattern.compile("<START:location>\\s*([^\\(]*?)\\s*(?:\\(.*\\))?\\s*<END>");
             while ((line = reader.readLine()) != null) {
@@ -125,7 +147,8 @@ public class GeminiGeoLocator {
         Set<String> uniqueLocations = new HashSet<>();
         int totalLines = 0;
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/training_data.txt"))) {
+        ClassPathResource trainingDataResource = new ClassPathResource("training_data.txt");
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(trainingDataResource.getInputStream()))) {
             String line;
             Pattern pattern = Pattern.compile("<START:location>\\s*([^\\(]*?)\\s*(?:\\(.*\\))?\\s*<END>");
             while ((line = reader.readLine()) != null) {
