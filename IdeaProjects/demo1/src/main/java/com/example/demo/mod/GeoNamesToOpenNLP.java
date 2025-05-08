@@ -26,13 +26,13 @@ public class GeoNamesToOpenNLP {
 
     public void processFiles() {
         System.out.println(">>> Запуск методу processFiles()");
-        String inputFile1 = "GG.txt";
-        String inputFile2 = "UA.txt";
-        String inputFileUA2 = "UA2.txt";
-        String inputFileUA3 = "UA3.txt";
-        String inputFile4 = "coordinates.json";
-        String translatedFile = "translated_all_ukr.txt";
-        String outputFile = "training_data.txt";
+        String inputFile1 = "src/main/resources/GG.txt";
+        String inputFile2 = "src/main/resources/UA.txt";
+        String inputFileUA2 = "src/main/resources/UA2.txt";
+        String inputFileUA3 = "src/main/resources/UA3.txt";
+        String inputFile4 = "src/main/resources/coordinates.json";
+        String translatedFile = "src/main/resources/translated_all_ukr.txt";
+        String outputFile = "src/main/resources/training_data.txt";
 
         BufferedWriter writer = null;
 
@@ -146,12 +146,7 @@ public class GeoNamesToOpenNLP {
 
     private Set<CityWithCoordinates> readTranslatedCitiesFromFile(String filePath) throws IOException {
         Set<CityWithCoordinates> cities = new HashSet<>();
-        org.springframework.core.io.ClassPathResource resource = new org.springframework.core.io.ClassPathResource(filePath);
-        if (!resource.exists()) {
-            System.err.println("Попередження: Ресурс " + filePath + " не знайдено.");
-            return cities;
-        }
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             Pattern pattern = Pattern.compile("<START:location>\\s*(.*?)\\s*\\((.*?),\\s*(.*?)\\)\\s*<END>");
             while ((line = reader.readLine()) != null) {

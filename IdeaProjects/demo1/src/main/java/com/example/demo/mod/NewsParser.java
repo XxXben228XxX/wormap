@@ -32,9 +32,8 @@ import java.util.regex.Pattern;
 @Component
 public class NewsParser {
     private static final Logger logger = LoggerFactory.getLogger(NewsParser.class);
-    private static final String NEWS_FILE_PATH = "data/news_without_coordinates.txt";
-    private static final String PROCESSED_LINKS_FILE = "data/processed_links.txt";
-    private static final String GEOJSON_FILE_PATH = "data/news.json";
+    private static final String NEWS_FILE_PATH = "news_without_coordinates.txt";
+    private static final String PROCESSED_LINKS_FILE = "processed_links.txt";
 
     @Autowired
     private GeoCoder geoCoder;
@@ -179,17 +178,10 @@ public class NewsParser {
     }
 
     private void updateGeoJsonFile() {
-        File file = new File(GEOJSON_FILE_PATH);
+        String filePath = "src/main/resources/static/news.json";
+        File file = new File(filePath);
 
-        // Створюємо файл та директорію, якщо їх не існує
-        if (!file.getParentFile().exists()) {
-            if (file.getParentFile().mkdirs()) {
-                logger.info("Директорію створено: {}", file.getParentFile().getAbsolutePath());
-            } else {
-                logger.error("❌ Не вдалося створити директорію: {}", file.getParentFile().getAbsolutePath());
-                return;
-            }
-        }
+        // Створюємо файл, якщо він не існує
         if (!file.exists()) {
             try {
                 if (file.createNewFile()) {
@@ -242,7 +234,7 @@ public class NewsParser {
                 JSONObject geometry = feature.getJSONObject("geometry");
                 JSONArray existingCoords = geometry.getJSONArray("coordinates");
 
-                if (Math.abs(existingCoords.getDouble(0) - lon) < 1e-9 && Math.abs(existingCoords.getDouble(1) - lat) < 1e-9) {
+                if (existingCoords.getDouble(0) == lon && existingCoords.getDouble(1) == lat) {
                     // Додаємо нові посилання, якщо вони ще не в списку
                     JSONObject properties = feature.getJSONObject("properties");
                     JSONArray urlArray = properties.getJSONArray("url");
@@ -252,7 +244,7 @@ public class NewsParser {
                             urlArray.put(link);
                         }
                     }
-                    if (articleTitle != null && !properties.has("title")) {
+                    if (articleTitle != null) {
                         properties.put("title", articleTitle);
                     }
                     found = true;
@@ -281,7 +273,6 @@ public class NewsParser {
                 newFeature.put("geometry", geometry);
 
                 geoJsonArray.put(newFeature);
-                logger.info("Додано новий об'єкт GeoJSON: {}", newFeature.toString(4));
             }
         }
 

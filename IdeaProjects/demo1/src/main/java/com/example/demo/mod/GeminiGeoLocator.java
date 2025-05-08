@@ -10,7 +10,6 @@ import org.languagetool.tagging.uk.UkrainianTagger;
 import org.languagetool.tokenizers.uk.UkrainianWordTokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 
@@ -50,17 +49,10 @@ public class GeminiGeoLocator {
 
     @PostConstruct
     public void init() {
-        try {
-            ClassPathResource modelResource = new ClassPathResource("models/en-ner-location.bin");
-            if (modelResource.exists()) {
-                try (InputStream modelIn = modelResource.getInputStream()) {
-                    TokenNameFinderModel model = new TokenNameFinderModel(modelIn);
-                    locationFinder = new NameFinderME(model);
-                    logger.info("Модель для розпізнавання географічних назв успішно завантажена.");
-                }
-            } else {
-                logger.error("❌ Не знайдено моделі OpenNLP за шляхом: models/en-ner-location.bin");
-            }
+        try (InputStream modelIn = new FileInputStream("src/main/resources/models/en-ner-location.bin")) {
+            TokenNameFinderModel model = new TokenNameFinderModel(modelIn);
+            locationFinder = new NameFinderME(model);
+            logger.info("Модель для розпізнавання географічних назв успішно завантажена.");
         } catch (IOException e) {
             logger.error("Помилка завантаження моделі OpenNLP: {}", e.getMessage());
         }
@@ -72,9 +64,7 @@ public class GeminiGeoLocator {
     }
 
     private void loadKnownCities() {
-        knownCities.clear(); // Очищаємо множину перед завантаженням
-        ClassPathResource citiesResource = new ClassPathResource("training_data.txt");
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(citiesResource.getInputStream()))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/training_data.txt"))) {
             String line;
             Pattern pattern = Pattern.compile("<START:location>\\s*([^\\(]*?)\\s*(?:\\(.*\\))?\\s*<END>");
             while ((line = reader.readLine()) != null) {
@@ -147,8 +137,7 @@ public class GeminiGeoLocator {
         Set<String> uniqueLocations = new HashSet<>();
         int totalLines = 0;
 
-        ClassPathResource trainingDataResource = new ClassPathResource("training_data.txt");
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(trainingDataResource.getInputStream()))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/training_data.txt"))) {
             String line;
             Pattern pattern = Pattern.compile("<START:location>\\s*([^\\(]*?)\\s*(?:\\(.*\\))?\\s*<END>");
             while ((line = reader.readLine()) != null) {
