@@ -32,8 +32,9 @@ import java.util.regex.Pattern;
 @Component
 public class NewsParser {
     private static final Logger logger = LoggerFactory.getLogger(NewsParser.class);
-    private static final String NEWS_FILE_PATH = "news_without_coordinates.txt";
-    private static final String PROCESSED_LINKS_FILE = "processed_links.txt";
+    private static final String NEWS_FILE_PATH = System.getProperty("java.io.tmpdir") + "/news_without_coordinates.txt";
+    private static final String PROCESSED_LINKS_FILE = System.getProperty("java.io.tmpdir") + "/processed_links.txt";
+    private static final String GEOJSON_FILE_PATH = System.getProperty("java.io.tmpdir") + "/static/news.json";
 
     @Autowired
     private GeoCoder geoCoder;
@@ -178,7 +179,17 @@ public class NewsParser {
     }
 
     private void updateGeoJsonFile() {
-        String filePath = "src/main/resources/static/news.json";
+        File staticDir = new File(System.getProperty("java.io.tmpdir()") + "/static");
+        if (!staticDir.exists()) {
+            if (staticDir.mkdirs()) {
+                logger.info("Директорію static створено: {}", staticDir.getAbsolutePath());
+            } else {
+                logger.error("❌ Не вдалося створити директорію static: {}", staticDir.getAbsolutePath());
+                return;
+            }
+        }
+
+        String filePath = GEOJSON_FILE_PATH; // Використовуємо константу
         File file = new File(filePath);
 
         // Створюємо файл, якщо він не існує
