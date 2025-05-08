@@ -180,7 +180,7 @@ public class NewsParser {
     }
 
     private void updateGeoJsonFile() {
-        File staticDir = new File(System.getProperty("java.io.tmpdir()") + "/static");
+        File staticDir = new File(System.getProperty("java.io.tmpdir") + "/static");
         if (!staticDir.exists()) {
             if (staticDir.mkdirs()) {
                 logger.info("Директорію static створено: {}", staticDir.getAbsolutePath());
