@@ -32,9 +32,9 @@ import java.util.regex.Pattern;
 @Component
 public class NewsParser {
     private static final Logger logger = LoggerFactory.getLogger(NewsParser.class);
-    private static final String NEWS_FILE_PATH = System.getProperty("java.io.tmpdir") + "/news_without_coordinates.txt";
-    private static final String PROCESSED_LINKS_FILE = System.getProperty("java.io.tmpdir") + "/processed_links.txt";
-    private static final String GEOJSON_FILE_PATH = System.getProperty("java.io.tmpdir") + "/static/news.json";
+    private static final String NEWS_FILE_PATH = "data/news_without_coordinates.txt";
+    private static final String PROCESSED_LINKS_FILE = "data/processed_links.txt";
+    private static final String GEOJSON_FILE_PATH = "data/news.json";
 
     @Autowired
     private GeoCoder geoCoder;
@@ -156,8 +156,7 @@ public class NewsParser {
     }
     private Set<String> loadCitiesFromDatabase() {
         Set<String> cities = new HashSet<>();
-        ClassPathResource trainingDataResource = new ClassPathResource("training_data.txt");
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(trainingDataResource.getInputStream()))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/training_data.txt"))) {
             String line;
             Pattern pattern = Pattern.compile("<START:location>\\s*(.*?)\\s*<END>");
             while ((line = reader.readLine()) != null) {
@@ -180,20 +179,17 @@ public class NewsParser {
     }
 
     private void updateGeoJsonFile() {
-        File staticDir = new File(System.getProperty("java.io.tmpdir") + "/static");
-        if (!staticDir.exists()) {
-            if (staticDir.mkdirs()) {
-                logger.info("Директорію static створено: {}", staticDir.getAbsolutePath());
+        File file = new File(GEOJSON_FILE_PATH);
+
+        // Створюємо файл та директорію, якщо їх не існує
+        if (!file.getParentFile().exists()) {
+            if (file.getParentFile().mkdirs()) {
+                logger.info("Директорію створено: {}", file.getParentFile().getAbsolutePath());
             } else {
-                logger.error("❌ Не вдалося створити директорію static: {}", staticDir.getAbsolutePath());
+                logger.error("❌ Не вдалося створити директорію: {}", file.getParentFile().getAbsolutePath());
                 return;
             }
         }
-
-        String filePath = GEOJSON_FILE_PATH; // Використовуємо константу
-        File file = new File(filePath);
-
-        // Створюємо файл, якщо він не існує
         if (!file.exists()) {
             try {
                 if (file.createNewFile()) {
@@ -246,7 +242,7 @@ public class NewsParser {
                 JSONObject geometry = feature.getJSONObject("geometry");
                 JSONArray existingCoords = geometry.getJSONArray("coordinates");
 
-                if (existingCoords.getDouble(0) == lon && existingCoords.getDouble(1) == lat) {
+                if (Math.abs(existingCoords.getDouble(0) - lon) < 1e-9 && Math.abs(existingCoords.getDouble(1) - lat) < 1e-9) {
                     // Додаємо нові посилання, якщо вони ще не в списку
                     JSONObject properties = feature.getJSONObject("properties");
                     JSONArray urlArray = properties.getJSONArray("url");
@@ -256,7 +252,7 @@ public class NewsParser {
                             urlArray.put(link);
                         }
                     }
-                    if (articleTitle != null) {
+                    if (articleTitle != null && !properties.has("title")) {
                         properties.put("title", articleTitle);
                     }
                     found = true;
@@ -285,6 +281,7 @@ public class NewsParser {
                 newFeature.put("geometry", geometry);
 
                 geoJsonArray.put(newFeature);
+                logger.info("Додано новий об'єкт GeoJSON: {}", newFeature.toString(4));
             }
         }
 

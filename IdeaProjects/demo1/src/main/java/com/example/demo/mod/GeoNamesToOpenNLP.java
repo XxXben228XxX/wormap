@@ -146,7 +146,12 @@ public class GeoNamesToOpenNLP {
 
     private Set<CityWithCoordinates> readTranslatedCitiesFromFile(String filePath) throws IOException {
         Set<CityWithCoordinates> cities = new HashSet<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        org.springframework.core.io.ClassPathResource resource = new org.springframework.core.io.ClassPathResource(filePath);
+        if (!resource.exists()) {
+            System.err.println("Попередження: Ресурс " + filePath + " не знайдено.");
+            return cities;
+        }
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
             String line;
             Pattern pattern = Pattern.compile("<START:location>\\s*(.*?)\\s*\\((.*?),\\s*(.*?)\\)\\s*<END>");
             while ((line = reader.readLine()) != null) {
