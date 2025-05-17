@@ -165,39 +165,35 @@
         L.control.layers(baseMaps).addTo(map);
 
         async function updateNewsLayer() {
-            const urls = ['/data/news.json'];
+            const apiUrl = '/api/news-data'; // Змінено URL на новий API endpoint
             let text = null;
 
-            for (const url of urls) {
-                try {
-                    const response = await fetch(url);
-                    if (response.ok) {
-                        text = await response.text();
-                        console.log(`✅ Дані завантажено з ${url}`);
-                        break; // виходимо з циклу, якщо успішно
-                    } else {
-                        console.warn(`⚠️ Не вдалося завантажити з ${url}, статус: ${response.status}`);
-                    }
-                } catch (err) {
-                    console.warn(`⚠️ Помилка при спробі завантажити ${url}:`, err);
+            try {
+                const response = await fetch(apiUrl);
+                if (response.ok) {
+                    text = await response.text();
+                    console.log(`✅ Дані завантажено з API: ${apiUrl}`);
+                } else {
+                    console.error(`❌ Не вдалося завантажити дані з API ${apiUrl}, статус: ${response.status}`);
+                    // Якщо API повернув помилку, не продовжуємо обробку
+                    return;
                 }
-            }
-
-            if (!text) {
-                console.error('❌ Не вдалося завантажити жоден файл з новинами.');
+            } catch (err) {
+                console.error(`❌ Помилка при запиті до API ${apiUrl}:`, err);
+                // Якщо виникла помилка мережі або інша, не продовжуємо обробку
                 return;
             }
 
-            try {
-                text = text.trim();
-                if (text.endsWith(',')) {
-                    text = text.slice(0, -1);
-                }
-                if (!text.startsWith('[')) {
-                    text = '[' + text + ']';
-                }
+            if (!text || text.trim() === "") { // Додана перевірка на порожній рядок після trim
+                console.warn(`⚠️ Отримано порожні дані або null з API ${apiUrl}. Можливо, файл ще не створено.`);
+                text = "[]"; // Встановлюємо порожній масив для уникнення помилок парсингу
+            }
 
-                const data = JSON.parse(text);
+
+            try {
+                // Логіка очищення та парсингу JSON залишається майже без змін
+                // (прибираємо зайву обробку тексту, оскільки API має повертати валідний JSON)
+                const data = JSON.parse(text); // Парсимо отриманий текст як JSON
                 console.log('🔄 JSON оновлено:', data);
 
                 // Очистка попередніх шарів і контролів
@@ -208,33 +204,40 @@
                 newsLayer = L.geoJSON(data, {
                     onEachFeature: function (feature, layer) {
                         if (feature.properties?.name && feature.properties?.url) {
+                            // Обробка URL: перевіряємо, чи це масив, і беремо перший елемент
+                            const url = Array.isArray(feature.properties.url) ? feature.properties.url[0] : feature.properties.url;
                             layer.bindPopup(
                                 `<b>${feature.properties.title ? feature.properties.title + "</b><br><em>(" + feature.properties.name + ")</em><br>" : feature.properties.name + "</b><br>"}` +
-                                `<a href='${feature.properties.url}' target='_blank'>Читати більше</a>`
+                                `<a href='${url}' target='_blank'>Читати більше</a>` // Використовуємо оброблений URL
                             );
                         } else {
+                            // Якщо немає name або url, додаємо до списку без координат
                             noCoordinatesNews.push(feature.properties);
                         }
                     }
                 }).addTo(map);
 
+                // ... (логіка searchControl залишається без змін) ...
                 searchControl = new L.Control.Search({
                     layer: newsLayer,
-                    propertyName: "name",
+                    propertyName: "name", // Властивість, за якою шукаємо (назва локації)
                     moveToLocation: (latlng, title, map) => map.setView(latlng, 10),
                     filterData: (text, records) => {
                         const filtered = {};
                         text = text.trim().toLowerCase();
-                        if (text === '') return {};
+                        if (text === '') return records; // Повертаємо всі записи, якщо поле пошуку порожнє
                         for (const key in records) {
-                            if (key.toLowerCase().includes(text)) {
+                            // Шукаємо співпадіння в назві локації або заголовку новини (якщо є)
+                            const newsTitle = records[key].feature?.properties?.title || '';
+                            if (key.toLowerCase().includes(text) || newsTitle.toLowerCase().includes(text)) {
                                 filtered[key] = records[key];
                             }
                         }
                         return filtered;
                     },
                     onSearch: function (text, results) {
-                        if (results.length === 0) {
+                        if (Object.keys(results).length === 0) { // Перевіряємо, чи знайдені результати пошуку по шару
+                            // Якщо не знайдено на шарі, спробуємо геокодувати через Nominatim
                             geocode(text, (latlng) => {
                                 if (latlng) {
                                     this._map.setView(latlng, 10);
@@ -249,7 +252,7 @@
                 map.addControl(searchControl);
 
             } catch (e) {
-                console.error('❌ Помилка парсингу JSON:', e);
+                console.error('❌ Помилка парсингу JSON або обробки даних:', e);
             }
         }
 
