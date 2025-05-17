@@ -183,8 +183,19 @@ public class NewsParser {
     }
 
     private void updateGeoJsonFile() {
-        String filePath = "data/news.json"; // Відносно кореня проєкту
+        String filePath = "data/news.json"; // Шлях до файлу
         File file = new File(filePath);
+        File dataDir = file.getParentFile(); // Отримуємо батьківську директорію
+
+        // Створюємо батьківську директорію, якщо вона не існує
+        if (dataDir != null && !dataDir.exists()) {
+            if (dataDir.mkdirs()) {
+                logger.info("Створено директорію: {}", dataDir.getAbsolutePath());
+            } else {
+                logger.error("❌ Не вдалося створити директорію: {}", dataDir.getAbsolutePath());
+                return; // Виходимо, якщо не вдалося створити директорію
+            }
+        }
 
         // Створюємо файл, якщо він не існує
         if (!file.exists()) {
@@ -214,7 +225,11 @@ public class NewsParser {
                     content.append(line);
                 }
                 if (content.length() > 0) {
-                    geoJsonArray = new JSONArray(content.toString());
+                    try {
+                        geoJsonArray = new JSONArray(content.toString());
+                    } catch (org.json.JSONException e) {
+                        logger.warn("Файл GeoJSON містить некоректний JSON, буде перезаписано.");
+                    }
                 }
             } catch (IOException e) {
                 logger.warn("Файл GeoJSON не знайдено або порожній, створюємо новий.");
@@ -228,21 +243,22 @@ public class NewsParser {
             double lon = Double.parseDouble(coords[0]);
             double lat = Double.parseDouble(coords[1]);
             List<String> links = entry.getValue();
-
             String articleTitle = coordinatesToTitle.get(entry.getKey());
-
             boolean found = false;
 
-            // Перевіряємо, чи існують вже ці координати
             for (int i = 0; i < geoJsonArray.length(); i++) {
                 JSONObject feature = geoJsonArray.getJSONObject(i);
                 JSONObject geometry = feature.getJSONObject("geometry");
                 JSONArray existingCoords = geometry.getJSONArray("coordinates");
 
                 if (existingCoords.getDouble(0) == lon && existingCoords.getDouble(1) == lat) {
-                    // Додаємо нові посилання, якщо вони ще не в списку
                     JSONObject properties = feature.getJSONObject("properties");
-                    JSONArray urlArray = properties.getJSONArray("url");
+                    JSONArray urlArray = properties.optJSONArray("url");
+
+                    if (urlArray == null) {
+                        urlArray = new JSONArray();
+                        properties.put("url", urlArray);
+                    }
 
                     for (String link : links) {
                         if (!urlArray.toList().contains(link)) {
@@ -257,33 +273,26 @@ public class NewsParser {
                 }
             }
 
-            // Якщо координати відсутні, додаємо новий об'єкт
             if (!found) {
                 JSONObject newFeature = new JSONObject();
                 newFeature.put("type", "Feature");
-
                 JSONObject properties = new JSONObject();
                 properties.put("name", geoCoder.getLocation(lat, lon));
                 properties.put("url", new JSONArray(links));
-
                 if (articleTitle != null) {
                     properties.put("title", articleTitle);
                 }
-
                 JSONObject geometry = new JSONObject();
                 geometry.put("type", "Point");
                 geometry.put("coordinates", new JSONArray(new double[]{lon, lat}));
-
                 newFeature.put("properties", properties);
                 newFeature.put("geometry", geometry);
-
                 geoJsonArray.put(newFeature);
             }
         }
 
-        // Записуємо оновлений JSON у файл
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write(geoJsonArray.toString(4)); // Pretty print JSON
+            writer.write(geoJsonArray.toString(4));
             logger.info("GeoJSON оновлено.");
         } catch (IOException e) {
             logger.error("❌ Помилка запису у файл: {}", e.getMessage());
