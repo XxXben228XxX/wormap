@@ -164,92 +164,93 @@
 
         L.control.layers(baseMaps).addTo(map);
 
-        function updateNewsLayer() {
-            fetch('/static/news.json')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('❌ Неможливо завантажити news.json, сервер повернув: ' + response.status);
-                    }
-                    return response.text();
-                })
-                .then(text => {
-                    text = text.trim();
-                    if (text.endsWith(',')) {
-                        text = text.slice(0, -1);
-                    }
-                    if (!text.startsWith('[')) {
-                        text = '[' + text + ']';
-                    }
-                    try {
-                        const data = JSON.parse(text);
-                        console.log('🔄 JSON оновлено:', data);
+        async function updateNewsLayer() {
+            const urls = ['/static/news.json', '/data/news.json'];
+            let text = null;
 
-                        if (newsLayer) {
-                            map.removeLayer(newsLayer); // Видаляємо попередній шар
-                        }
-                        if (searchControl) {
-                            map.removeControl(searchControl); // Видаляємо попередній контроль пошуку
-                        }
-                        noCoordinatesNews = []; // Очищаємо масив новин без координат
+            for (const url of urls) {
+                try {
+                    const response = await fetch(url);
+                    if (response.ok) {
+                        text = await response.text();
+                        console.log(`✅ Дані завантажено з ${url}`);
+                        break; // виходимо з циклу, якщо успішно
+                    } else {
+                        console.warn(`⚠️ Не вдалося завантажити з ${url}, статус: ${response.status}`);
+                    }
+                } catch (err) {
+                    console.warn(`⚠️ Помилка при спробі завантажити ${url}:`, err);
+                }
+            }
 
-                        newsLayer = L.geoJSON(data, {
-                            onEachFeature: function (feature, layer) {
-                                if (feature.properties && feature.properties.name && feature.properties.url) {
-                                    layer.bindPopup(
-                                        "<b>" +
-                                        (feature.properties.title ? feature.properties.title + "</b><br><em>(" + feature.properties.name + ")</em><br>" : feature.properties.name + "</b><br>") +
-                                        "<a href='" +
-                                        feature.properties.url +
-                                        "' target='_blank'>Читати більше</a>"
-                                    );
+            if (!text) {
+                console.error('❌ Не вдалося завантажити жоден файл з новинами.');
+                return;
+            }
+
+            try {
+                text = text.trim();
+                if (text.endsWith(',')) {
+                    text = text.slice(0, -1);
+                }
+                if (!text.startsWith('[')) {
+                    text = '[' + text + ']';
+                }
+
+                const data = JSON.parse(text);
+                console.log('🔄 JSON оновлено:', data);
+
+                // Очистка попередніх шарів і контролів
+                if (newsLayer) map.removeLayer(newsLayer);
+                if (searchControl) map.removeControl(searchControl);
+                noCoordinatesNews = [];
+
+                newsLayer = L.geoJSON(data, {
+                    onEachFeature: function (feature, layer) {
+                        if (feature.properties?.name && feature.properties?.url) {
+                            layer.bindPopup(
+                                `<b>${feature.properties.title ? feature.properties.title + "</b><br><em>(" + feature.properties.name + ")</em><br>" : feature.properties.name + "</b><br>"}` +
+                                `<a href='${feature.properties.url}' target='_blank'>Читати більше</a>`
+                            );
+                        } else {
+                            noCoordinatesNews.push(feature.properties);
+                        }
+                    }
+                }).addTo(map);
+
+                searchControl = new L.Control.Search({
+                    layer: newsLayer,
+                    propertyName: "name",
+                    moveToLocation: (latlng, title, map) => map.setView(latlng, 10),
+                    filterData: (text, records) => {
+                        const filtered = {};
+                        text = text.trim().toLowerCase();
+                        if (text === '') return {};
+                        for (const key in records) {
+                            if (key.toLowerCase().includes(text)) {
+                                filtered[key] = records[key];
+                            }
+                        }
+                        return filtered;
+                    },
+                    onSearch: function (text, results) {
+                        if (results.length === 0) {
+                            geocode(text, (latlng) => {
+                                if (latlng) {
+                                    this._map.setView(latlng, 10);
                                 } else {
-                                    noCoordinatesNews.push(feature.properties);
+                                    alert("Місце не знайдено.");
                                 }
-                            }
-                        });
-                        newsLayer.addTo(map);
-
-                        // Ініціалізуємо панель пошуку з оновленим шаром
-                        searchControl = new L.Control.Search({
-                            layer: newsLayer,
-                            propertyName: "name",
-                            moveToLocation: function (latlng, title, map) {
-                                map.setView(latlng, 10);
-                            },
-                            filterData: function (text, records) {
-                                const filteredRecords = {};
-                                text = text.trim().toLowerCase();
-                                if (text === '') {
-                                    return {};
-                                }
-                                for (const key in records) {
-                                    if (key.toLowerCase().includes(text)) {
-                                        filteredRecords[key] = records[key];
-                                    }
-                                }
-                                return filteredRecords;
-                            },
-                            onSearch: function (text, results) {
-                                if (results.length === 0) {
-                                    geocode(text, function (latlng) {
-                                        if (latlng) {
-                                            this._map.setView(latlng, 10);
-                                        } else {
-                                            alert("Місце не знайдено.");
-                                        }
-                                    }.bind(this));
-                                }
-                            }
-                        });
-                        map.addControl(searchControl);
-
-                    } catch (e) {
-                        console.error('❌ Помилка парсингу оновленого JSON:', e);
+                            });
+                        }
                     }
-                })
-                .catch(error => {
-                    console.error('Помилка завантаження оновленого JSON:', error);
                 });
+
+                map.addControl(searchControl);
+
+            } catch (e) {
+                console.error('❌ Помилка парсингу JSON:', e);
+            }
         }
 
         // Запускаємо оновлення шару кожні 10 хвилин (600000 мілісекунд)
