@@ -201,7 +201,7 @@ public class NewsParser {
         if (!file.exists()) {
             try {
                 if (file.createNewFile()) {
-                    logger.info("Файл GeoJSON створено: {}", file.getAbsolutePath());
+                    logger.info("Файл GeoJSON створено (новий): {}", file.getAbsolutePath());
                 } else {
                     logger.error("❌ Не вдалося створити файл GeoJSON: {}", file.getAbsolutePath());
                     return;
@@ -210,29 +210,35 @@ public class NewsParser {
                 logger.error("❌ Помилка створення файлу GeoJSON: {}", e.getMessage());
                 return;
             }
+        } else {
+            logger.info("Файл GeoJSON вже існує: {}", file.getAbsolutePath());
         }
 
         logger.info("Оновлення файлу GeoJSON: {}", file.getAbsolutePath());
 
         JSONArray geoJsonArray = new JSONArray();
+        StringBuilder content = new StringBuilder();
 
         // Зчитуємо існуючий JSON, якщо він є
         if (file.length() > 0) {
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                StringBuilder content = new StringBuilder();
                 String line;
                 while ((line = reader.readLine()) != null) {
                     content.append(line);
                 }
                 if (content.length() > 0) {
+                    logger.info("Вміст файлу GeoJSON перед оновленням: {}", content.toString());
                     try {
                         geoJsonArray = new JSONArray(content.toString());
+                        logger.info("Успішно зчитано {} об'єктів з GeoJSON.", geoJsonArray.length());
                     } catch (org.json.JSONException e) {
                         logger.warn("Файл GeoJSON містить некоректний JSON, буде перезаписано.");
                     }
+                } else {
+                    logger.warn("Файл GeoJSON порожній.");
                 }
             } catch (IOException e) {
-                logger.warn("Файл GeoJSON не знайдено або порожній, створюємо новий.");
+                logger.warn("Помилка читання файлу GeoJSON, буде створено новий вміст.");
             }
         } else {
             logger.warn("Файл GeoJSON порожній, створюємо новий.");
@@ -293,9 +299,9 @@ public class NewsParser {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write(geoJsonArray.toString(4));
-            logger.info("GeoJSON оновлено.");
+            logger.info("GeoJSON оновлено. Записано {} об'єктів.", geoJsonArray.length());
         } catch (IOException e) {
-            logger.error("❌ Помилка запису у файл: {}", e.getMessage());
+            logger.error("❌ Помилка запису у файл GeoJSON: {}", e.getMessage());
         }
     }
 
