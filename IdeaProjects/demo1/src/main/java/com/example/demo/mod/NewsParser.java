@@ -155,17 +155,22 @@ public class NewsParser {
     }
     private Set<String> loadCitiesFromDatabase() {
         Set<String> cities = new HashSet<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/training_data.txt"))) {
+        ClassPathResource resource = new ClassPathResource("training_data.txt");
+        try (InputStream inputStream = resource.getInputStream();
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"))) {
             String line;
             Pattern pattern = Pattern.compile("<START:location>\\s*(.*?)\\s*<END>");
             while ((line = reader.readLine()) != null) {
                 Matcher matcher = pattern.matcher(line);
                 while (matcher.find()) {
-                    cities.add(matcher.group(1));
+                    cities.add(matcher.group(1).trim());
                 }
             }
+            logger.info("Завантажено {} міст з бази даних.", cities.size());
         } catch (IOException e) {
             logger.error("Помилка завантаження бази даних міст: {}", e.getMessage());
+        } catch (NullPointerException e) {
+            logger.error("Файл training_data.txt не знайдено в classpath.", e.getMessage());
         }
         return cities;
     }
@@ -178,7 +183,7 @@ public class NewsParser {
     }
 
     private void updateGeoJsonFile() {
-        String filePath = "src/main/resources/static/news.json";
+        String filePath = "data/news.json"; // Відносно кореня проєкту
         File file = new File(filePath);
 
         // Створюємо файл, якщо він не існує
