@@ -165,41 +165,60 @@
         L.control.layers(baseMaps).addTo(map);
 
         async function updateNewsLayer() {
-            const urls = ['/api/news-data', '/static/news.json', '/data/news.json']; // Додано обидва шляхи
-            let text = null;
-            let loadedFrom = null;
-
-            for (const url of urls) {
-                try {
-                    const response = await fetch(url);
-                    if (response.ok) {
-                        text = await response.text();
-                        console.log(`✅ Дані завантажено з: ${url}`);
-                        loadedFrom = url;
-                        break; // Виходимо з циклу, якщо успішно завантажили
-                    } else {
-                        console.warn(`⚠️ Не вдалося завантажити з ${url}, статус: ${response.status}`);
-                    }
-                } catch (err) {
-                    console.warn(`⚠️ Помилка при спробі завантажити ${url}:`, err);
-                }
-            }
-
-            if (!text) {
-                console.error('❌ Не вдалося завантажити жоден файл з новинами.');
-                return;
-            }
-
+            // Весь блок try...catch тепер всередині функції updateNewsLayer
             try {
-                const data = JSON.parse(text);
-                console.log('🔄 JSON оновлено (завантажено з: ${loadedFrom}):', data);
+                const urls = ['/api/news-data', '/static/news.json', '/data/news.json']; // Шляхи до файлів
+                let allGeoJsonData = []; // Масив для зберігання всіх отриманих GeoJSON даних
+                let loadedSources = []; // Для логування, звідки були завантажені дані
 
-                // Очистка попередніх шарів і контролів
+                // Проходимо по всіх URL-адресах і намагаємося завантажити дані з кожної
+                for (const url of urls) {
+                    try {
+                        const response = await fetch(url);
+                        if (response.ok) {
+                            const text = await response.text();
+                            // Важливо: перевіряємо, чи не порожній текст, і чи це валідний JSON
+                            if (text && text.trim() !== "" && text.trim() !== "[]") {
+                                try {
+                                    const data = JSON.parse(text);
+                                    if (Array.isArray(data)) {
+                                        allGeoJsonData = allGeoJsonData.concat(data); // Додаємо дані до загального масиву
+                                        loadedSources.push(url);
+                                        console.log(`✅ Дані успішно завантажено та додано з: ${url}`);
+                                    } else {
+                                        console.warn(`⚠️ Завантажено дані з ${url}, але це не валідний масив GeoJSON:`, data);
+                                    }
+                                } catch (e) {
+                                    console.error(`❌ Помилка парсингу JSON з ${url}:`, e);
+                                }
+                            } else {
+                                console.warn(`⚠️ Отримано порожні дані або "[]" з ${url}.`);
+                            }
+                        } else {
+                            console.warn(`⚠️ Не вдалося завантажити з ${url}, статус: ${response.status}`);
+                        }
+                    } catch (err) {
+                        console.warn(`⚠️ Помилка при спробі завантажити ${url}:`, err);
+                    }
+                }
+
+                if (allGeoJsonData.length === 0) {
+                    console.warn('⚠️ Жодного валідного GeoJSON файлу не було завантажено з усіх джерел.');
+                    // Якщо даних немає, очистимо карту
+                    if (newsLayer) map.removeLayer(newsLayer);
+                    if (searchControl) map.removeControl(searchControl);
+                    noCoordinatesNews = [];
+                    return; // Виходимо, якщо немає даних для відображення
+                }
+
+                console.log(`🔄 JSON оновлено (завантажено з: ${loadedSources.join(', ')}). Всього об'єктів: ${allGeoJsonData.length}`, allGeoJsonData);
+
+                // Очистка попередніх шарів і контролів перед додаванням нових даних
                 if (newsLayer) map.removeLayer(newsLayer);
                 if (searchControl) map.removeControl(searchControl);
-                noCoordinatesNews = [];
+                noCoordinatesNews = []; // Очистити список новин без координат
 
-                newsLayer = L.geoJSON(data, {
+                newsLayer = L.geoJSON(allGeoJsonData, { // Передаємо об'єднані дані
                     onEachFeature: function (feature, layer) {
                         if (feature.properties?.name && feature.properties?.url) {
                             const url = Array.isArray(feature.properties.url) ? feature.properties.url[0] : feature.properties.url;
@@ -245,9 +264,9 @@
                 map.addControl(searchControl);
 
             } catch (e) {
-                console.error('❌ Помилка парсингу JSON або обробки даних:', e);
+                console.error('❌ Помилка обробки об\'єднаних даних:', e);
             }
-        }
+        } // <-- Закриваюча дужка для функції updateNewsLayer
 
         // Запускаємо оновлення шару кожні 10 хвилин (600000 мілісекунд)
         setInterval(updateNewsLayer, 600000);
@@ -382,7 +401,7 @@
                 modal.style.display = "none";
             }
         }
-    });
+    }); // <-- Це закриваюча дужка для document.addEventListener("DOMContentLoaded", function () { ... });
 </script>
 </body>
 </html>
