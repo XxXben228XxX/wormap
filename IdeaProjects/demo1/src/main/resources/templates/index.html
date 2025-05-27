@@ -348,6 +348,52 @@
             }
             return newsArray;
         }
+        // Оновлена функція для завантаження новин без координат з нового ендпоінту
+        async function loadNewsFromWithoutCoordinates() {
+            console.log("Завантаження новин без координат з /api/news-without-coordinates");
+            try {
+                const response = await fetch('/api/news-without-coordinates');
+                if (!response.ok) {
+                    throw new Error('❌ Неможливо завантажити файл новин без координат.');
+                }
+                const textData = await response.text(); // Очікуємо простий текст
+                const newsArrayForModal = parseTextForModal(textData); // Парсимо текст
+                displayNewsInModal(newsArrayForModal);
+            } catch (error) {
+                console.error('Помилка завантаження файлу новин без координат:', error);
+                const modalContent = document.getElementById("noCoordinatesContent");
+                modalContent.innerHTML = `<p style="color: red;">Помилка завантаження новин без координат: ${error.message}</p>`;
+            }
+        }
+
+        // Нова функція для парсингу текстових даних
+        function parseTextForModal(textData) {
+            const newsArray = [];
+            // Розділяємо записи за подвійним переведенням рядка (або більше)
+            const newsEntries = textData.split(/\n\n+/).filter(entry => entry.trim() !== '');
+
+            newsEntries.forEach(entry => {
+                // Розділяємо кожну новину на рядки, обрізаємо пробіли та видаляємо порожні рядки
+                const lines = entry.split('\n').map(line => line.trim()).filter(line => line !== '');
+                const newsItem = {};
+
+                lines.forEach(line => {
+                    if (line.startsWith("Дата та час:")) {
+                        newsItem.date = line.substring("Дата та час:".length).trim();
+                    } else if (line.startsWith("Назва:")) {
+                        newsItem.title = line.substring("Назва:".length).trim();
+                    } else if (line.startsWith("Посилання:")) {
+                        newsItem.url = line.substring("Посилання:".length).trim();
+                    }
+                });
+
+                // Додаємо новину, якщо є мінімум назва та посилання
+                if (newsItem.title && newsItem.url) {
+                    newsArray.push(newsItem);
+                }
+            });
+            return newsArray;
+        }
 
         function displayNewsInModal(newsArray) {
             console.group("displayNewsInModal");
@@ -390,6 +436,7 @@
         btn.onclick = function () {
             modal.style.display = "block";
             loadNewsFromFile();
+            loadNewsFromWithoutCoordinates();
         }
 
         span.onclick = function () {
