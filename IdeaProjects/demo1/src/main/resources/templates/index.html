@@ -167,7 +167,7 @@
         async function updateNewsLayer() {
             // Весь блок try...catch тепер всередині функції updateNewsLayer
             try {
-                const urls = ['/api/news-data', '/static/news.json', '/data/news.json']; // Шляхи до файлів
+                const urls = ['/api/news-data', '/static/news.json']; // Шляхи до файлів
                 let allGeoJsonData = []; // Масив для зберігання всіх отриманих GeoJSON даних
                 let loadedSources = []; // Для логування, звідки були завантажені дані
 
