@@ -10,10 +10,15 @@ import org.languagetool.tagging.uk.UkrainianTagger;
 import org.languagetool.tokenizers.uk.UkrainianWordTokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired; // Додаємо цей імпорт
+import org.springframework.core.io.ClassPathResource; // Додаємо цей імпорт
+import org.springframework.core.io.Resource; // Додаємо цей імпорт
+import org.springframework.core.io.ResourceLoader; // Додаємо цей імпорт
 import org.springframework.stereotype.Component;
-import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.apache.commons.text.similarity.LevenshteinDistance; // Перевіряємо, чи є цей імпорт
 
 import java.io.*;
+import java.nio.charset.StandardCharsets; // Додаємо цей імпорт
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -47,24 +52,44 @@ public class GeminiGeoLocator {
             "маріуполь", "херсон", "мелітополь", "бердянськ" // Міста, які часто згадуються у новинах
     );
 
+    // Впроваджуємо ResourceLoader для доступу до ресурсів
+    @Autowired
+    private ResourceLoader resourceLoader;
+
     @PostConstruct
     public void init() {
-        try (InputStream modelIn = new FileInputStream("src/main/resources/models/en-ner-location.bin")) {
-            TokenNameFinderModel model = new TokenNameFinderModel(modelIn);
-            locationFinder = new NameFinderME(model);
-            logger.info("Модель для розпізнавання географічних назв успішно завантажена.");
+        // Завантаження моделі OpenNLP
+        try {
+            // Використовуємо ClassPathResource для завантаження моделі з src/main/resources/models/
+            ClassPathResource modelResource = new ClassPathResource("models/en-ner-location.bin");
+            try (InputStream modelIn = modelResource.getInputStream()) {
+                TokenNameFinderModel model = new TokenNameFinderModel(modelIn);
+                locationFinder = new NameFinderME(model);
+                logger.info("Модель для розпізнавання географічних назв успішно завантажена.");
+            }
         } catch (IOException e) {
-            logger.error("Помилка завантаження моделі OpenNLP: {}", e.getMessage());
+            logger.error("Помилка завантаження моделі OpenNLP: {}. Перевірте, чи існує файл models/en-ner-location.bin в resources.", e.getMessage());
         }
 
         tokenizer = new UkrainianWordTokenizer();
         tagger = new UkrainianTagger();
-        loadKnownCities();
-        trainModel();
+        loadKnownCities(); // Завантажуємо відомі міста
+        trainModel(); // Цей метод лише для логування унікальних локацій, не для навчання моделі OpenNLP.
     }
 
     private void loadKnownCities() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/training_data.txt"))) {
+        // Шлях до training_data.txt, який записується в тимчасову директорію
+        String tempDir = System.getProperty("java.io.tmpdir");
+        String trainingDataFilePath = tempDir + File.separator + "training_data.txt";
+
+        File trainingDataFile = new File(trainingDataFilePath);
+
+        if (!trainingDataFile.exists()) {
+            logger.warn("Файл training_data.txt не знайдено за шляхом: {}. Список відомих міст не буде завантажено.", trainingDataFilePath);
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(trainingDataFile), StandardCharsets.UTF_8))) {
             String line;
             Pattern pattern = Pattern.compile("<START:location>\\s*([^\\(]*?)\\s*(?:\\(.*\\))?\\s*<END>");
             while ((line = reader.readLine()) != null) {
@@ -73,11 +98,12 @@ public class GeminiGeoLocator {
                     knownCities.add(simplifyLemma(matcher.group(1).trim().toLowerCase()));
                 }
             }
-            logger.info("Завантажено {} відомих міст.", knownCities.size());
+            logger.info("Завантажено {} відомих міст з {}.", knownCities.size(), trainingDataFilePath);
         } catch (IOException e) {
-            logger.error("Помилка завантаження списку міст: {}", e.getMessage());
+            logger.error("Помилка завантаження списку міст з {}: {}", trainingDataFilePath, e.getMessage());
         }
     }
+
 
     public String getLocationFromText(String newsText) {
         List<AnalyzedTokenReadings> lemmatizedTokensReadings = lemmatizeText(newsText);
@@ -137,7 +163,17 @@ public class GeminiGeoLocator {
         Set<String> uniqueLocations = new HashSet<>();
         int totalLines = 0;
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/training_data.txt"))) {
+        // Шлях до training_data.txt, який записується в тимчасову директорію
+        String tempDir = System.getProperty("java.io.tmpdir");
+        String trainingDataFilePath = tempDir + File.separator + "training_data.txt";
+        File trainingDataFile = new File(trainingDataFilePath);
+
+        if (!trainingDataFile.exists()) {
+            logger.warn("Файл training_data.txt не знайдено за шляхом: {}. Пропуск обробки для trainModel().", trainingDataFilePath);
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(trainingDataFile), StandardCharsets.UTF_8))) {
             String line;
             Pattern pattern = Pattern.compile("<START:location>\\s*([^\\(]*?)\\s*(?:\\(.*\\))?\\s*<END>");
             while ((line = reader.readLine()) != null) {
@@ -147,24 +183,32 @@ public class GeminiGeoLocator {
                     uniqueLocations.add(simplifyLemma(matcher.group(1).trim().toLowerCase()));
                 }
             }
-            logger.info("Проаналізовано {} рядків у файлі training_data.txt.", totalLines);
-            logger.info("Знайдено {} унікальних назв локацій.", uniqueLocations.size());
+            logger.info("Проаналізовано {} рядків у файлі {} для trainModel().", totalLines, trainingDataFilePath);
+            logger.info("Знайдено {} унікальних назв локацій для trainModel().", uniqueLocations.size());
 
         } catch (IOException e) {
-            logger.error("Помилка при читанні файлу training_data.txt: {}", e.getMessage());
+            logger.error("Помилка при читанні файлу {} для trainModel(): {}", trainingDataFilePath, e.getMessage());
         }
     }
 
     public List<AnalyzedTokenReadings> lemmatizeText(String text) {
         List<String> tokens = tokenizer.tokenize(text);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("lemmatized_words.log", true))) {
+
+        // Шлях для файлу логів лематизованих слів у тимчасовій директорії
+        String tempDir = System.getProperty("java.io.tmpdir");
+        String lemmatizedLogFilePath = tempDir + File.separator + "lemmatized_words.log";
+
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(lemmatizedLogFilePath, true), StandardCharsets.UTF_8))) {
             List<AnalyzedTokenReadings> analyzedTokens = tagger.tag(tokens);
             for (AnalyzedTokenReadings tokenReadings : analyzedTokens) {
-                writer.write(tokenReadings.getToken() + " -> " + tokenReadings.getReadings().get(0).getLemma() + "\n");
+                String lemma = (tokenReadings != null && !tokenReadings.getReadings().isEmpty() && tokenReadings.getReadings().get(0).getLemma() != null)
+                        ? tokenReadings.getReadings().get(0).getLemma()
+                        : tokenReadings.getToken(); // Використовуємо оригінальний токен, якщо лема відсутня
+                writer.write(tokenReadings.getToken() + " -> " + lemma + "\n");
             }
             return analyzedTokens;
         } catch (IOException e) {
-            logger.error("Помилка при лематизації тексту: {}", e.getMessage());
+            logger.error("Помилка при лематизації тексту або записі логу в {}: {}", lemmatizedLogFilePath, e.getMessage());
             return null;
         }
     }
@@ -178,7 +222,7 @@ public class GeminiGeoLocator {
         }
 
         for (String suffix : CITY_SUFFIXES) {
-            if (lemma.endsWith(suffix)) {
+            if (lemma.endsWith(suffix) && !CITY_ROOT_EXCEPTIONS.contains(lemma)) { // Додаємо перевірку на виключення
                 lemma = lemma.substring(0, lemma.length() - suffix.length());
                 break;
             }
