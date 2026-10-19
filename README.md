@@ -48,7 +48,8 @@ ukr.net ──► NewsParser (Jsoup)
 
 ## Технології
 
-- Java, Spring Boot, Maven
+- Java 21, Spring Boot, Spring Data JPA (Hibernate), Maven
+- PostgreSQL (на Render), Redis
 - Jsoup, slf4j
 - Apache OpenNLP (`en-ner-location`, `en-pos-maxent`, `opennlp-uk-ud-iu-lemmas`), LanguageTool (українська лематизація)
 - Nominatim API (OpenStreetMap), дані GeoNames
@@ -102,26 +103,34 @@ docker run -p 8080:8080 -e PORT=8080 wormap
 docker compose up --build
 ```
 
-Перед запуском відкрий `docker-compose.yml` і перевір змінні середовища:
-`SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `JWT_SECRET`.
-
-> Не зберігай реальні паролі та ключі в `docker-compose.yml` у репозиторії.
-> Винеси їх у файл `.env` (він додається до `.gitignore`) і підставляй як `${DB_PASSWORD}`.
+Параметри підключення до бази, `JWT_SECRET` і `REDIS_*` передаються змінними середовища
+(див. таблицю нижче). Тримай їх у файлі `.env` поруч із `docker-compose.yml`
+і не додавай цей файл у репозиторій.
 
 ## Конфігурація
 
-| Налаштування / змінна          | Призначення                                                    |
-|--------------------------------|----------------------------------------------------------------|
-| `PORT`                         | Порт сервера (використовується в `Dockerfile`)                 |
-| `nominatim.api.url`            | Адреса Nominatim, наприклад `https://nominatim.openstreetmap.org/search?q=` |
-| `SPRING_DATASOURCE_URL`        | Рядок підключення до бази даних                                |
-| `SPRING_DATASOURCE_USERNAME`   | Користувач бази даних                                          |
-| `SPRING_DATASOURCE_PASSWORD`   | Пароль бази даних                                              |
-| `JWT_SECRET`                   | Ключ підпису JWT                                               |
-| `JAVA_OPTS`                    | Параметри JVM (за замовчуванням `-Xmx512m -Xms256m`)           |
+Основні налаштування лежать в `application.properties`. Секрети підставляються зі змінних середовища.
+
+| Змінна середовища             | Призначення                                              | За замовчуванням |
+|-------------------------------|----------------------------------------------------------|------------------|
+| `RENDER_POSTGRESQL_USER`      | Користувач PostgreSQL                                    | немає, обов'язкова |
+| `RENDER_POSTGRESQL_PASSWORD`  | Пароль PostgreSQL                                        | немає, обов'язкова |
+| `JWT_SECRET`                  | Ключ підпису JWT                                         | у коді є запасне значення, обов'язково задай власний |
+| `REDIS_HOST` / `REDIS_PORT`   | Підключення до Redis                                     | `localhost` / `6379` |
+| `PORT`                        | Порт сервера (використовується в `Dockerfile`)           | немає |
+| `JAVA_OPTS`                   | Параметри JVM                                            | `-Xmx512m -Xms256m` |
+
+Інші параметри в `application.properties`:
+
+- `spring.datasource.url`: за замовчуванням вказує на PostgreSQL на Render (`sslmode=require`).
+  Для локальної бази перевизнач її змінною `SPRING_DATASOURCE_URL`, наприклад
+  `jdbc:postgresql://localhost:5432/wormap`
+- `spring.jpa.hibernate.ddl-auto=update`: Hibernate сам створює і оновлює таблиці
+- `nominatim.api.url=https://nominatim.openstreetmap.org/search?q=`: адреса геокодера
+- логи пишуться в `./logs/my-app.log`
 
 Публічний Nominatim має обмеження частоти запитів (приблизно 1 запит на секунду),
-тому не змінюй інтервал парсера на дуже малий.
+тому не став інтервал парсера дуже малим.
 
 ## Обмеження та плани
 
